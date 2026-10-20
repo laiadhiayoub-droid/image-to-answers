@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { FileText, Code2, Sigma, Table2, Palette, Sparkles, Languages, Loader2, RotateCcw } from "lucide-react";
 import { ImageDropzone } from "@/components/ImageDropzone";
 import { ResultCard } from "@/components/ResultCard";
+import { FormattedNotebook } from "@/components/FormattedNotebook";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
@@ -170,17 +171,17 @@ const Index = () => {
 
               {result?.ocrText && (
                 <ResultCard
-                  title={result.isCode ? `كود ${result.codeLanguage || ""}`.trim() : "النص المستخرج"}
+                  title={result.isCode ? `كود ${result.codeLanguage || ""}`.trim() : "دفتر الملاحظات المنسق"}
                   icon={result.isCode ? <Code2 className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
                   copyText={result.ocrText}
                   downloadFilename={result.isCode ? `snippet.${result.codeLanguage || "txt"}` : "extracted.txt"}
                 >
-                  <pre
+                  {result.isCode ? <pre
                     dir="ltr"
                     className="text-xs sm:text-sm font-mono bg-secondary/60 rounded-lg p-4 overflow-x-auto whitespace-pre-wrap break-words text-foreground/90 max-h-96"
                   >
                     {result.ocrText}
-                  </pre>
+                  </pre> : <FormattedNotebook text={result.ocrText} sourceImage={imageUrl ?? undefined} />}
 
                   {/* Translate */}
                   <div className="mt-4 pt-4 border-t border-border space-y-3">
@@ -203,8 +204,8 @@ const Index = () => {
                       </Button>
                     </div>
                     {translation && (
-                      <div className="rounded-lg bg-secondary/60 p-4 text-sm whitespace-pre-wrap leading-relaxed animate-fade-in">
-                        {translation}
+                      <div className="animate-fade-in">
+                        <FormattedNotebook text={translation} />
                       </div>
                     )}
                   </div>
@@ -227,23 +228,18 @@ const Index = () => {
                 </ResultCard>
               )}
 
-              {hasTable && (
+              {hasTable && result && (
                 <ResultCard
                   title="جدول"
                   icon={<Table2 className="h-4 w-4" />}
-                  copyText={result!.tableMarkdown || JSON.stringify(result!.tableJson, null, 2)}
+                  copyText={result.tableMarkdown || JSON.stringify(result.tableJson, null, 2)}
                   downloadFilename="table.md"
                   downloadMime="text/markdown"
                 >
-                  {result!.tableMarkdown && (
-                    <pre
-                      dir="ltr"
-                      className="text-xs font-mono bg-secondary/60 rounded-lg p-4 overflow-x-auto whitespace-pre"
-                    >
-                      {result!.tableMarkdown}
-                    </pre>
+                  {result.tableMarkdown && (
+                    <FormattedNotebook text={result.tableMarkdown} />
                   )}
-                  {result!.tableJson?.length > 0 && (
+                  {result.tableJson?.length > 0 && (
                     <details className="mt-3">
                       <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground">
                         عرض كـ JSON
@@ -252,7 +248,7 @@ const Index = () => {
                         dir="ltr"
                         className="mt-2 text-xs font-mono bg-secondary/60 rounded-lg p-4 overflow-x-auto"
                       >
-                        {JSON.stringify(result!.tableJson, null, 2)}
+                        {JSON.stringify(result.tableJson, null, 2)}
                       </pre>
                     </details>
                   )}

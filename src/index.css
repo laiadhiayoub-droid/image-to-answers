@@ -46,6 +46,63 @@
     --shadow-card: 0 8px 32px -8px hsl(240 14% 2% / 0.6);
 
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --note-paper: 0 0% 100%;
+    --note-ink: 225 18% 20%;
+    --note-heading: 168 52% 25%;
+    --note-line: 210 28% 90%;
+    --note-margin: 350 55% 78%;
+    --note-soft: 168 28% 96%;
+    --note-shadow: 0 3px 12px hsl(240 14% 2% / 0.16);
+  }
+}
+
+@layer components {
+  .note-paper {
+    position: relative;
+    min-width: 0;
+    padding: 2rem 2.75rem 2rem 1.5rem;
+    border-radius: 6px;
+    background-color: hsl(var(--note-paper));
+    background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, hsl(var(--note-line)) 31px, hsl(var(--note-line)) 32px);
+    color: hsl(var(--note-ink));
+    box-shadow: var(--note-shadow);
+    font-family: "Noto Naskh Arabic", "Traditional Arabic", Tahoma, sans-serif;
+    font-size: 1rem;
+    line-height: 2rem;
+    overflow-wrap: anywhere;
+    text-align: start;
+  }
+  .note-paper::before { content: ""; position: absolute; inset-block: 0; right: 1.5rem; width: 1px; background: hsl(var(--note-margin)); pointer-events: none; }
+  .note-paper h1, .note-paper h2, .note-paper h3, .note-paper h4 { color: hsl(var(--note-heading)); font-weight: 700; margin: 1.5rem 0 1rem; line-height: 2rem; }
+  .note-paper h1 { font-size: 1.75rem; }
+  .note-paper h2 { font-size: 1.4rem; }
+  .note-paper h3 { font-size: 1.2rem; }
+  .note-paper > :first-child { margin-top: 0; }
+  .note-paper p { margin-block: 0 1rem; white-space: pre-wrap; }
+  .note-paper ul, .note-paper ol { padding-inline-start: 1.5rem; margin-block: 1rem; }
+  .note-paper ul { list-style-type: disc; }
+  .note-paper ol { list-style-type: decimal; }
+  .note-paper li > p { margin: 0; }
+  .note-paper blockquote { border-inline-start: 3px solid hsl(var(--note-heading)); padding-inline-start: 1rem; margin-block: 1rem; }
+  .note-paper a { color: hsl(var(--note-heading)); text-decoration: underline; }
+  .note-paper pre { overflow-x: auto; white-space: pre; padding: 1rem; background: hsl(var(--note-soft)); border: 1px solid hsl(var(--note-line)); border-radius: 4px; text-align: left; font-size: .875rem; }
+  .note-paper code { font-family: ui-monospace, monospace; }
+  .note-paper hr { border-color: hsl(var(--note-line)); margin-block: 1rem; }
+  .note-table-scroll { max-width: 100%; overflow-x: auto; margin-block: 1rem; background: hsl(var(--note-paper)); }
+  .note-paper table { border-collapse: collapse; width: 100%; font-family: inherit; font-size: .95rem; }
+  .note-paper th, .note-paper td { border: 1px solid hsl(var(--note-line)); padding: .5rem .75rem; text-align: start; min-width: 5rem; }
+  .note-paper th { background: hsl(var(--note-soft)); color: hsl(var(--note-heading)); font-weight: 700; }
+  .note-diagram { margin-block: 1.5rem; padding-block: 1rem; background: hsl(var(--note-paper)); border-block: 1px solid hsl(var(--note-line)); }
+  .note-paper .note-diagram-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+  .note-diagram-flow li { width: min(100%, 20rem); display: flex; flex-direction: column; align-items: center; }
+  .note-diagram-node { width: 100%; padding: .5rem 1rem; text-align: center; border: 1px solid hsl(var(--note-heading)); border-radius: 4px; background: hsl(var(--note-soft)); }
+  .note-diagram-arrow { width: 40px; height: 40px; flex-shrink: 0; color: hsl(var(--note-heading)); }
+  .note-diagram-source { width: auto; max-width: 100%; max-height: 28rem; object-fit: contain; margin-inline: auto; }
+  .note-paper .note-diagram-labels { margin-block-end: 0; }
+  @media (max-width: 640px) {
+    .note-paper { padding: 1.5rem 1.75rem 1.5rem 1rem; }
+    .note-paper::before { right: 1rem; }
+    .note-paper h1 { font-size: 1.5rem; }
   }
 }
 
