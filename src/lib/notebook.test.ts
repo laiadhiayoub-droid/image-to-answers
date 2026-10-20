@@ -6,8 +6,18 @@ describe("notebook content parsing", () => {
     const text = "# الفيزياء\n## الطاقة\n1. تعريف\n2. مثال\n- ملاحظة\n\n| الكمية | القيمة |\n| --- | --- |\n| السرعة | 20 |";
     expect(parseNotebook(text)).toEqual([{ type: "markdown", content: text }]);
   });
-  it("turns explicit arrows into connected diagram nodes", () => {
-    expect(parseNotebook("الضوء -> العدسة -> الصورة")).toEqual([{ type: "diagram", labels: ["الضوء", "العدسة", "الصورة"], connected: true }]);
+  it("routes explicit arrows to the original-image block instead of reconstructed nodes", () => {
+    expect(parseNotebook("الضوء -> العدسة -> الصورة")).toEqual([{ type: "diagram", labels: ["الضوء", "العدسة", "الصورة"], connected: false }]);
+  });
+  it("keeps the original-image block at the diagram position between text sections", () => {
+    expect(parseNotebook("# التجربة\nالنص قبل الرسم\nالضوء -> العدسة\nالنص بعد الرسم")).toEqual([
+      { type: "markdown", content: "# التجربة\nالنص قبل الرسم" },
+      { type: "diagram", labels: ["الضوء", "العدسة"], connected: false },
+      { type: "markdown", content: "النص بعد الرسم" },
+    ]);
+  });
+  it("uses the source-image branch for fenced diagrams too", () => {
+    expect(parseNotebook("```diagram\na -> b\n```")).toEqual([{ type: "diagram", labels: ["a", "b"], connected: false }]);
   });
   it("removes ASCII drawing borders without inventing connections", () => {
     expect(parseNotebook("```ascii\n+-----+\n| الخلية |\n+-----+\n```")).toEqual([{ type: "diagram", labels: ["الخلية"], connected: false }]);

@@ -58,7 +58,8 @@ export function parseNotebook(text: string): NotebookBlock[] {
       if (drawing) {
         flush();
         const source = body.join("\n");
-        blocks.push({ type: "diagram", labels: diagramLabels(source), connected: body.length === 1 && /-->|->|→/.test(source) && !/←|<--|<-/.test(source) });
+        // Use the existing source-image branch, never reconstruct the drawing.
+        blocks.push({ type: "diagram", labels: diagramLabels(source), connected: false });
       } else markdown.push(line, ...body, "```");
       continue;
     }
@@ -69,7 +70,7 @@ export function parseNotebook(text: string): NotebookBlock[] {
       const drawing = [line];
       while (i + 1 < lines.length && isDrawingLine(lines[i + 1])) drawing.push(lines[++i]);
       const source = drawing.join("\n");
-      blocks.push({ type: "diagram", labels: diagramLabels(source), connected: drawing.every(row => /-->|->|→/.test(row)) && !/←|<--|<-/.test(source) });
+      blocks.push({ type: "diagram", labels: diagramLabels(source), connected: false });
     } else markdown.push(line);
   }
   flush();
