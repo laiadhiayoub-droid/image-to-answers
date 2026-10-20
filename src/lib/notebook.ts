@@ -28,7 +28,7 @@ export function normalizeNoteMarkdown(text: string): string {
   // A pipe-separated OCR table already carries explicit column boundaries.
   for (let i = 0; i < normalized.length - 1; i++) {
     if (!normalized[i].includes("|") || !normalized[i + 1].includes("|")) continue;
-    if (/^\s*\|?\s*:?-+/.test(normalized[i + 1])) continue;
+    if (/^\s*\|?\s*:?-+/.test(normalized[i]) || /^\s*\|?\s*:?-+/.test(normalized[i + 1])) continue;
     const columns = normalized[i].replace(/^\s*\||\|\s*$/g, "").split("|").length;
     if (columns < 2) continue;
     let end = i + 1;
